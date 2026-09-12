@@ -43,4 +43,6 @@ iverilog -o tb_semaforo.vvp semaforo.v tb_semaforo.v
 vvp tb_semaforo.vvp
 gtkwave semaforo.vcd
 ```
-En la siguiente imágen se observa el reusltado de la simulción en gtkwave.
+En la siguiente imágen se observa el resultado de la simulación en gtkwave.
+
+![Simulación Semáforo en GTKWave](Lab00/semaforogtk.png)
