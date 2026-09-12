@@ -1,0 +1,259 @@
+$date
+	Fri Sep 11 23:52:07 2026
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module tb_acumulador $end
+$var wire 1 ! done $end
+$var wire 6 " acc [5:0] $end
+$var reg 1 # clk $end
+$var reg 1 $ rst $end
+$var reg 1 % start $end
+$var reg 4 & x [3:0] $end
+$scope module uut $end
+$var wire 1 # clk $end
+$var wire 1 $ rst $end
+$var wire 1 % start $end
+$var wire 4 ' x [3:0] $end
+$var parameter 2 ( ADD $end
+$var parameter 2 ) DONE $end
+$var parameter 2 * IDLE $end
+$var parameter 32 + VARIANTE $end
+$var reg 6 , acc [5:0] $end
+$var reg 3 - count [2:0] $end
+$var reg 1 ! done $end
+$var reg 2 . next_state [1:0] $end
+$var reg 2 / state [1:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+b11 +
+b0 *
+b10 )
+b1 (
+$end
+#0
+$dumpvars
+b0 /
+b0 .
+b0 -
+b0 ,
+b1 '
+b1 &
+0%
+1$
+0#
+b0 "
+0!
+$end
+#3000
+1#
+#6000
+0#
+#9000
+1#
+#12000
+0#
+0$
+#15000
+1#
+#18000
+0#
+#20000
+b1 .
+1%
+#21000
+b1 .
+b1 /
+b1 -
+b1 "
+b1 ,
+1#
+#24000
+0#
+#27000
+b1 .
+b10 -
+b10 "
+b10 ,
+1#
+#30000
+b1 .
+0#
+0%
+#33000
+b1 .
+b11 -
+b11 "
+b11 ,
+1#
+#36000
+0#
+#39000
+b1 .
+b100 -
+b100 "
+b100 ,
+1#
+#42000
+0#
+#45000
+b1 .
+b101 -
+b101 "
+b101 ,
+1#
+#48000
+0#
+#51000
+b1 .
+b110 -
+b110 "
+b110 ,
+1#
+#54000
+0#
+#57000
+b1 .
+b111 -
+b111 "
+b111 ,
+1#
+#60000
+0#
+#63000
+b1 .
+b0 -
+b1000 "
+b1000 ,
+1#
+#66000
+0#
+#69000
+b1 .
+b1 -
+b1001 "
+b1001 ,
+1#
+#72000
+0#
+#75000
+b1 .
+b10 -
+b1010 "
+b1010 ,
+1#
+#78000
+0#
+#81000
+b1 .
+b11 -
+b1011 "
+b1011 ,
+1#
+#84000
+0#
+#87000
+b1 .
+b100 -
+b1100 "
+b1100 ,
+1#
+#90000
+0#
+#93000
+b1 .
+b101 -
+b1101 "
+b1101 ,
+1#
+#96000
+0#
+#99000
+b1 .
+b110 -
+b1110 "
+b1110 ,
+1#
+#102000
+0#
+#105000
+b1 .
+b111 -
+b1111 "
+b1111 ,
+1#
+#108000
+0#
+#111000
+b1 .
+b0 -
+b10000 "
+b10000 ,
+1#
+#114000
+0#
+#117000
+b1 .
+b1 -
+b10001 "
+b10001 ,
+1#
+#120000
+0#
+#123000
+b1 .
+b10 -
+b10010 "
+b10010 ,
+1#
+#126000
+0#
+#129000
+b1 .
+b11 -
+b10011 "
+b10011 ,
+1#
+#132000
+0#
+#135000
+b10 .
+b100 -
+b10100 "
+b10100 ,
+1#
+#138000
+0#
+#141000
+1!
+b0 .
+b10 /
+b101 -
+b10101 "
+b10101 ,
+1#
+#144000
+0#
+#147000
+0!
+b0 /
+1#
+#150000
+0#
+#153000
+b0 -
+b0 "
+b0 ,
+1#
+#156000
+0#
+#159000
+1#
+#160000
