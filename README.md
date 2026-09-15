@@ -7,7 +7,7 @@
 ##  Integrantes del Equipo
 - **Samuel Hincapie Perilla**
 - **Eduardo**
-- **Gabriel**
+- **Gabriel Alberto Rodríguez Rincón**
 
 ---
 
