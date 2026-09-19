@@ -72,9 +72,18 @@ El sistema combina una unidad de control FSM y una ruta de datos:
 
 Para llevar a cabo el sistena, es necesario utilizar un registro que se encargue de guardar el valor que va acumulando `acc`, además de utilizar un sumador para realizar la operción respectiva. por otro lado, para las funciones de contar 3 y 4 veces se utilizará un contador que permita determinar el numero de cuenta realizada y por ultimo se usa un comparador para analizar el camino de datos.
 
-
-
 ![Diagrama de Caja negra](Lab00/ImagenesAcc/Entradas%20y%20salidas%20Acc.png)
+
+Las entradas de la FSM de ña unidad de control son:
+- CLK : permite cambiar entre estados dependiendo de su duración
+- Start: Es el boton que activa la secuencia
+- rst: Diferente al boton de rst del acumulador, se encarga de resetear solo la FSM devolviendola al estado inicial S_0
+- OutComp: permite analizar la condiion deseada
+
+Conexiones datapath:
+- El sumador tiene sus dos entradas (sumandos) y la salida (suma), el sumador tiene la cantidad de bits necesaria para soportar la suma reequerida
+- el registro de 6 bits `acc[5:0]` se encarga de almacenar el valor, con conexiones como `rstacc` responsable de resetearlo en cero y `Enacc` que funciona como habilitador para detener o empezar la suma, el cual será controlado por la  unidad de control.
+
 
 #### 2.2 Construcción de la unidad de ccontrol FSM
 
@@ -84,7 +93,7 @@ Se muestra el diagrama de estados de la unidad de control, consta de 4 estados q
 
 
 #### 2.3 Conexiones FSMD
-Se establecen las conexiones que unen la unidad de control con el camino de datos presentando el flujo de conexiones del circuito digital para realizar el caso 3 del ejercicio.
+Se establecen las conexiones que unen la unidad de control con el camino de datos presentando el flujo de conexiones del circuito digital para realizar el caso 3 del ejercicio. En este caso la maquina FSM es de tipología Moore
 
 
 ![Diagrama de estado](Lab00/ImagenesAcc/FSMD.png).
