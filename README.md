@@ -112,14 +112,25 @@ gtkwave wave.vcd
 ```
 Con el propósito de validar funcionalmente el comportamiento síncrono del acumulador y comprobar el correcto flujo de transiciones de la FSM, se ejecutó el entorno de simulación empleando Icarus Verilog y GTKWave. En la Figura se registran las formas de onda correspondientes a las señales principales del sistema (clk y acc ), donde se evidencia la acumulación progresiva en el tiempo.
 
-Para el caso número 1:
+Se escoge el valor `x = 1` y se desarrollan los respectivos casos 
+
+- Para el caso número 1:
 
 ![Simulación Semáforo en GTKWave](Lab00/Acc1.png)
 
-Para el caso número 2:
+Se observa claramente como la variable de `acc` llega hasta 3 antes de caer a cero nuevamente, el contador ha hecho la suma de `x` tres veces
 
-![Simulación Semáforo en GTKWave](Lab00/Acc2.png)
+- Para el caso número 2:
 
-Para el caso número 3:
+![Simulación Semáforo en GTKWave](Lab00/Acc2.png).
+
+
+La variable de `acc` llega hasta 4 antes de caer a cero nuevamente, el contador ha hecho la suma de `x` cuatro veces.
+
+
+- Para el caso número 3:
 
 ![Simulación Semáforo en GTKWave](Lab00/Acc3.png)
+
+
+la variable `acc` llega hasta 20 contando de uno en uno, se cumple la condición  `[acc < 20] = 0` o `[acc >= 20] = 1` por lo que la FSM pasa al estado $S_3$ volviendo nuevamente la salida a cero.
