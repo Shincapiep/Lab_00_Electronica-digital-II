@@ -66,15 +66,31 @@ El sistema combina una unidad de control FSM y una ruta de datos:
 * **`IDLE` (`2'b00`):** Estado de reposo. Al detectar `start = 1`, carga la primera entrada en `acc` (`acc <= x`), inicializa el contador (`count <= 1`) y pasa a `ADD`.
 * **`ADD` (`2'b01`):** Suma incrementalmente `acc <= acc + x` en cada flanco de subida. Mantiene la iteración mientras `acc < 20`. Al evaluar `acc >= 20`, transiciona a `DONE`.
 * **`DONE` (`2'b10`):** Emite la señal `done = 1` confirmando el fin del procesamiento y regresa a `IDLE`.
+  
 
 #### 2.1 Identificacion de entradas y salidas FSM + datapath
 
-Para llevar a cabo el sistena, es necesario utilizar un registro que se encargue de guardar el valor que va acumulando `acc`, además de utilizar un sumador para realizar la operción respectiva. 
+Para llevar a cabo el sistena, es necesario utilizar un registro que se encargue de guardar el valor que va acumulando `acc`, además de utilizar un sumador para realizar la operción respectiva. por otro lado, para las funciones de contar 3 y 4 veces se utilizará un contador que permita determinar el numero de cuenta realizada y por ultimo se usa un comparador para analizar el camino de datos.
+
+
+
+![Diagrama de Caja negra](Lab00/ImagenesAcc/Entradas%20y%20salidas%20Acc.png)
+
+#### 2.2 Construcción de la unidad de ccontrol FSM
 
 Se muestra el diagrama de estados de la unidad de control, consta de 4 estados que controlan el datapath indetificado anterior mente para el caso numero 3 (acumula hasta 20), para simplificar la expresión de comparasion, en lugar de utilizar `acc >= 20`, se cambia por `acc < 20` manejando la lógica respectiva
 
 ![Diagrama de estados](Lab00/ImagenesAcc/Diagrama%20de%20estados%20Acc.png)
----
+
+
+#### 2.3 Conexiones FSMD
+Se establecen las conexiones que unen la unidad de control con el camino de datos presentando el flujo de conexiones del circuito digital para realizar el caso 3 del ejercicio.
+
+
+![Diagrama de estado](Lab00/ImagenesAcc/FSMD.png).
+
+Nota: para los casos de contar 3 y 4 veces el numero `x` de la entrada se realiza un proceso similar utilizando el contador, para realizar un circuito con las tres funciones se utiliza un multiplexoor que permita seleccionar el tipo de funcion deseado.
+
 
 ### 3. Resultados de Simulación y Análisis (GTKWave)
 
