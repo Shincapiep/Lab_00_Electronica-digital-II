@@ -67,6 +67,10 @@ El sistema combina una unidad de control FSM y una ruta de datos:
 * **`ADD` (`2'b01`):** Suma incrementalmente `acc <= acc + x` en cada flanco de subida. Mantiene la iteración mientras `acc < 20`. Al evaluar `acc >= 20`, transiciona a `DONE`.
 * **`DONE` (`2'b10`):** Emite la señal `done = 1` confirmando el fin del procesamiento y regresa a `IDLE`.
 
+
+Se muestra el diagrama de estados de la unidad de control, consta de 4 estados que controlan el datapath indetificado anterior mente para el caso numero 3 (acumula hasta 20), para simplificar la expresión de comparasion, en lugar de utilizar `acc >= 20`, se cambia por `acc < 20` manejando la lógica respectiva
+
+![Diagrama de estados](Lab00/ImagenesAcc/Diagrama%20de%20estados%20Acc.png)
 ---
 
 ### 3. Resultados de Simulación y Análisis (GTKWave)
