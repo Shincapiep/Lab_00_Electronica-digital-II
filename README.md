@@ -209,7 +209,7 @@ la variable `acc` llega hasta 20 contando de uno en uno, se cumple la condición
 
 ---
 
-## Ejercicio 3: Acumulador Secuencial
+## Ejercicio 3: Diseño y simulación de una ASM completa (Control + Datapath) (BONO)
 
 ### 3.1 Objetivo Del Ejercicio: 
 El objetivo principal de este ejercicio es diseñar un transmisor serial síncrono de 8 bits. Supongamos que se tiene un número de 8 bits guardado dentro de un sistema donde cada uno de estos viajará o se moverá al tiempo. Sin embargo, para enviar ese dato a otro dispositivo externo, generalmente no se cuenta con 8 cables que envié cada uno un bit, sino un solo cable de salida asignado como `tx`. Es por ello que la tarea del circuito o la simulación es recibir los 8 bits todos juntos, ir sacando un bit a la vez por la línea tx (respetando un tiempo específico para cada bit) y avisar cuándo está ocupado transmitiendo y cuándo terminó. Las entradas y salidas con las que se cuentan son las siguientes:
