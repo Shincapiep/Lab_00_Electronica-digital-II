@@ -285,10 +285,46 @@ La simulación realizada en GTKwave se muestra a continuación:
 
 <img width="1646" height="354" alt="image" src="https://github.com/user-attachments/assets/f3355392-83a8-4d4d-9b44-a0e23ff2b4f0" />
 
-La simulación realizada valida completamente el funcionamiento del transmisor serial registrando dos transmisiones consecutivas (`8'hA5` y `8'h3C`).
+La simulación realizada valida completamente el funcionamiento del transmisor serial registrando dos transmisiones consecutivas `8'hA5` (`10100101b`) y `8'h3C` (`00111100b`).
 
-1. **Inicialización:** Se aplica la señal de reset (`rst`) al inicio de la simulación, forzando la FSM al estado de reposo (`IDLE` / `000`) y manteniendo `tx = 1`.
-2. **Primera Transmisión (`8'hA5`):** Al recibir un pulso de `start` de 1 ciclo de reloj, la señal `busy` se activa. Se observa el desplazamiento progresivo del registro `shift_reg` desde `A5` hasta `00` en pasos hexágonos intermedios, exponiendo en `tx` la trama serial LSB first (`1, 0, 1, 0, 0, 1, 0, 1`). El contador `bit_count` incrementa de 0 a 8 y finaliza con un pulso de 1 ciclo en `done`.
-3. **Segunda Transmisión (`8'h3C`):** Tras un intervalo de reposo, un segundo pulso de `start` carga el byte `3C` en `shift_reg`. La línea `tx` refleja la nueva secuencia de bits (`0, 0, 1, 1, 1, 1, 0, 0`), verificando que el sistema es capaz de encadenar múltiples envíos de datos sin bloqueos ni desfasamientos temporales.
+**Generación de Baudios y Sincronización**: Con una configuración de `CLK_PERIOD = 10 ns` y `CLKS_PER_BIT = 4`, cada bit en la línea `tx` se mantiene estable durante exactamente 4 ciclos de reloj ($40\text{ ns}$). El contador interno `tick_cnt` realiza la cuenta repetitiva de `0` a `3` ($CLKS\_PER\_BIT - 1$) para marcar la transición entre bits.
+
+**Desplazamiento del Registro Datapath (`shift_reg`)**: Durante cada paso por el estado `SHIFT_NEXT`, se aplica un desplazamiento lógico hacia la derecha (`shift_reg <= {1'b0, shift_reg[7:1]}`). El valor expuesto a la línea `tx` en todo momento corresponde a la posición menos significativa (`shift_reg[0]`), garantizando el envío del bit menos significativo primero.
+
+En la primera transmisión (`8'hA5`), la evolución hexadecimal de `shift_reg` y el bit resultante en `tx` se observa así:
+
+| Estado de Avance | `shift_reg` (Hex) | `shift_reg` (Binario) | Bit Emitido en `tx` (`shift_reg[0]`) |
+| :---: | :---: | :---: | :---: |
+| **Carga (`LOAD`)** | `A5` | `10100101` | **1** |
+| Bit 1 | `52` | `01010010` | **0** |
+| Bit 2 | `29` | `00101001` | **1** |
+| Bit 3 | `14` | `00010100` | **0** |
+| Bit 4 | `0A` | `00001010` | **0** |
+| Bit 5 | `05` | `00000101` | **1** |
+| Bit 6 | `02` | `00000010` | **0** |
+| Bit 7 | `01` | `00000001` | **1** |
+| **Fin (`DONE`)** | `00` | `00000000` | *(Línea en reposo: 1)* |
+
+De forma análoga, la segunda transmisión (`8'h3C`) muestra el desplazamiento `3C` $\rightarrow$ `1E` $\rightarrow$ `0F` $\rightarrow$ `07` $\rightarrow$ `03` $\rightarrow$ `01` $\rightarrow$ `00`, emitiendo la secuencia serial `0, 0, 1, 1, 1, 1, 0, 0`.
+
+---
+
+### 3.4.3 Confirmación Explícita de Criterios de Éxito
+
+Con base en la simulación realizada, se valida el cumplimiento de todas las condiciones especificadas:
+
+1. **Transmisión Correcta de los 8 Bits (LSB First):** 
+   * Para `8'hA5`, la línea `tx` emite en orden exacto la trama: `1, 0, 1, 0, 0, 1, 0, 1`.
+   * Para `8'h3C`, la línea `tx` emite en orden exacto la trama: `0, 0, 1, 1, 1, 1, 0, 0`.
+2. **Duración Exacta de cada Bit (`CLKS_PER_BIT` ciclos):**
+   * Cada bit permanece completamente estable durante $40\text{ ns}$ (4 ciclos de reloj de $10\text{ ns}$), sin generar *glitches* ni variaciones intermedias.
+3. **Activación Correcta de la Señal `busy`:**
+   * La señal `busy` conmuta a nivel alto ($1$) de manera síncrona al recibir el pulso de `start` y permanece activa ($1$) ininterrumpidamente durante todo el envío del byte, retornando a nivel bajo ($0$) únicamente al concluir los 8 bits.
+4. **Activación de `done` por un Único Ciclo:**
+   * Al finalizar la transmisión de cada byte (`bit_count == 8`), la bandera `done` se activa en nivel alto ($1$) durante exactamente **1 ciclo de reloj** ($10\text{ ns}$) y retorna a $0$ de forma inmediata en la transición a `IDLE`.
+5. **Coherencia Interna del Sistema:**
+   * La variable de estado (`state`) transiciona secuencialmente entre los valores binarios correspondientes (`000` $\rightarrow$ `001` $\rightarrow$ `010` $\rightarrow$ `011` $\rightarrow \dots \rightarrow$ `100` $\rightarrow$ `000`).
+   * El contador `bit_count` incrementa de manera ordenada de **0 a 8**, sirviendo como condición estricta de parada para la Unidad de Control.
+
 
 ---
