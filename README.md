@@ -206,3 +206,26 @@ La variable de `acc` llega hasta 4 antes de caer a cero nuevamente, el contador 
 
 
 la variable `acc` llega hasta 20 contando de uno en uno, se cumple la condición  `[acc < 20] = 0` o `[acc >= 20] = 1` por lo que la FSM pasa al estado $S_3$ volviendo nuevamente la salida a cero.
+
+---
+
+## Ejercicio 3: Acumulador Secuencial
+
+### 3.1 Planteamiento del Diseño: 
+El objetivo principal de este ejercicio es diseñar un transmisor serial síncrono de 8 bits. Supongamos que se tiene un número de 8 bits guardado dentro de un sistema donde cada uno de estos viajará o se moverá al tiempo. Sin embargo, para enviar ese dato a otro dispositivo externo, generalmente no se cuenta con 8 cables disponibles, sino un solo cable de salida asignado como `tx`. Es por ello que la tarea del circuito o la simulación es recibir los 8 bits todos juntos, ir sacando un bit a la vez por la línea tx (respetando un tiempo específico para cada bit) y avisar cuándo está ocupado transmitiendo y cuándo terminó. Las entradas y salidas con las que se cuentan son las siguientes:
+
+- **Entradas:** `clk` (reloj del sistema), `reset`, `start` (Pulso de un ciclo para iniciar la transmisión) y `data_in[7:0]` (Byte a transmitir).
+- **Salidas:** `tx` (Línea de salida serial), `busy` (Indica que la transmisión está en curso) y `done` (Pulso de 1 ciclo al finalizar la transmisión).
+
+### 3.1 Planteamiento del Diseño: 
+Para resolver este tipo de problemas de manera estructurada, lo ideal es dividir el sistema en dos grandes bloques que trabajan juntos, el datapath y la unidad de control (Estructura ASM). La función de cada uno será la siguiente:
+
+- Datapath: Se puede ver como la maquinaria de un sistema, ya que es donde están los elementos que guardan o modifican datos como los registros, los contadores y los desplazadores. El Datapath no toma decisiones, solo ejecuta órdenes.
+- Unidad de Control: Por otro lado, este es el cerebro, aquí no se guarda el dato de 8 bits ni se va a vontar el tiempo directamente. Su único trabajo es mirar en qué punto del proceso se encuentra el sistema para enviar señales de control al Datapath y que este actúe.
+
+Teniendo en cuenta las entradas y salidas mencionadas en el ejercicio, los bloques de esta ASM se verían por el momento de esta manera:
+
+<img width="1067" height="570" alt="image" src="https://github.com/user-attachments/assets/59c9629f-17c6-407b-b266-4cd0aeab7298" />
+
+
+
