@@ -285,8 +285,6 @@ La simulación realizada en GTKwave se muestra a continuación:
 
 <img width="1628" height="354" alt="image" src="https://github.com/user-attachments/assets/9c742e16-7d39-4d69-9f35-a23b22aa938a" />
 
-<img width="1654" height="354" alt="image" src="https://github.com/user-attachments/assets/10302b0b-5640-4f4d-8ed5-e8d1b8366c62" />
-
 La simulación realizada valida completamente el funcionamiento del transmisor serial registrando dos transmisiones consecutivas `8'hA5` (`10100101b`) y `8'h3C` (`00111100b`).
 
 **- Generación de Baudios y Sincronización**: Con una configuración de `CLK_PERIOD = 10 ns` y `CLKS_PER_BIT = 4`, cada bit en la línea `tx` se mantiene estable durante exactamente 4 ciclos de reloj ($40\text{ ns}$). El contador interno `tick_cnt` realiza la cuenta repetitiva de `0` a `3` ($CLKS\_PER\_BIT - 1$) para marcar la transición entre bits.
