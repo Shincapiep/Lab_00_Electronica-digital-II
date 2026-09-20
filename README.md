@@ -241,16 +241,17 @@ El siguiente diagrama representa la máquina de estados algorítmica (ASM) encar
 
 <img width="469" height="676" alt="image" src="https://github.com/user-attachments/assets/79d86d33-83f1-4d05-b9ff-35a0575919f8" />
 
-- `IDLE`: Es el estado inicial del sistema. Aquí se mantiene la línea serial en alto (`tx = 1`), `busy = 0` y `done = 0`.  Este estado se mantendrá en bucle hasta que la señal de inicio se active (`start = 1`) y asi poder pasar al estado `LOAD`.
+- `IDLE`: El sistema se encuentra a la espera de la señal de inicio. Mantiene la línea de transmisión en alto (`tx = 1`) y las banderas inactivas (`busy = 0`, `done = 0`). Se mantiene en un bucle sobre sí mismo mientras `start == 0`.
 
-- `LOAD`: Es el estado de preparación cuya duración es de 1 ciclo de reloj. Su función es activar la bandera `busy = 1`, habilitar la carga en paralelo del dato de entrada en `shift_reg` y reiniciar las referencias de `tick_cnt` y `bit_count` para luego seguir incondicionalmente al estado `BIT_HOLD`.
+- `LOAD`: Al detectarse `start == 1`, se activa la señal de ocupado (`busy = 1`), se carga el dato de entrada en el registro de desplazamiento (`shift_reg = data_in`) y se inicializan los contadores de tiempo (`tick_cnt = 0`) y de trama (`bit_count = 0`).
 
-- `BIT_HOLD`: Mantiene la salida `tx` conectada al bit actual (`shift_reg[0]`) mientras `tick_cnt` incrementa. Este estado dura `CLKS_PER_BIT` ciclos de reloj hasta que finaliza el tiempo estipulado para el bit, momento en que pasa a `SHIFT_NEXT`.
+- `BIT_HOLD`: Coloca en la línea de salida el bit menos significativo del registro (`tx = shift_reg[0]`). El sistema evalúa la condición de temporización `tick_cnt >= CLKS_PER_BIT - 1`. Mientras no se alcance el tiempo por bit, incrementa el contador `tick_cnt += 1` y se mantiene en este estado. Pero en el momento que llegue a completar los ciclos requeridos, avanza al estado de desplazamiento.
 
-- `SHIFT_NEXT`: Ejecuta la orden de desplazamiento a la derecha en `shift_reg`, incrementa en una unidad el contador de bits (`bit_count`) y reinicia el contador de tiempo `tick_cnt`. Si `bit_count < 7`, el proceso va a regrasar a `BIT_HOLD` para procesar el siguiente bit. Pero si `bit_count == 7`, el proceso avanzará hacia `DONE`.
+- `SHIFT_NEXT`: Ejecuta un desplazamiento lógico a la derecha en el registro (`shift_reg = shift_reg >> 1`), incrementa el contador de bits transmitidos (`bit_count += 1`) y reinicia el contador de baudios (`tick_cnt = 0`). Inmediatamente evalúa la condición de parada `bit_count == 8`; Si quedan bits por enviar, retorna a `BIT_HOLD` para procesar el siguiente bit. Pero si ya se transmitieron los 8 bits completos, desactiva la bandera de ocupado (`Next_busy = 0`) y pasa al estado final.
 
-- `DONE`: Es la  transición final con una duración de 1 ciclo de reloj. Aquí se indica que ya se terminó la transmisión, por ende se desactiva la bandera `busy = 0` y se genera un pulso positivo en `done = 1` para notificar al sistema externo que la transferencia concluyó. Después pasa incondicionalmente al estado `IDLE`.
+- `DONE`: Emite un pulso en alto en la señal `done = 1`, restaura la línea a reposo (`tx = 1`) y desactiva `busy = 0`. Finalizado este ciclo, retorna incondicionalmente a `IDLE` mediante el conector (1).
 
+- `RESET`: Si en cualquier punto de la ejecución se activa la señal `reset == 1`, el sistema ejecuta la limpieza inmediata de todos los registros internos (`busy = 0`, `bit_count = 0`, `tick_cnt = 0`, `shift_reg = 0`) y fuerza el retorno a `IDLE` a través del conector (2).
 
 ### 3.2.2 Datapath
 
@@ -264,9 +265,9 @@ Teniendo en cuenta lo solicitado en el enunciado del problema y el diagrama de f
 
 Para que la unidad de control se comunique con el datapath y con el exterior, se requiere de una Máquina de Estados Finitos (FSM) que incluya los 5 estadossolicitados en el problema:
 
-<img width="832" height="641" alt="image" src="https://github.com/user-attachments/assets/f9ff285a-69ba-4aab-b89d-30f6364af15d" />
+<img width="712" height="589" alt="image" src="https://github.com/user-attachments/assets/01914bdf-19d7-422a-9f20-ee2ff24d088d" />
 
-El comportamiento de cada estado es el siguiente:
+El comportamiento de cada estado es el previsto en el digrama de flujo de la ASM:
 
 - `IDLE`: Es el estado inicial del sistema. Aquí se mantiene la línea serial en alto (`tx = 1`), `busy = 0` y `done = 0`.  Este estado se mantendrá en bucle hasta que la señal de inicio se active (`start = 1`) y asi poder pasar al estado `LOAD`.
 
@@ -274,7 +275,7 @@ El comportamiento de cada estado es el siguiente:
 
 - `BIT_HOLD`: Mantiene la salida `tx` conectada al bit actual (`shift_reg[0]`) mientras `tick_cnt` incrementa. Este estado dura `CLKS_PER_BIT` ciclos de reloj hasta que finaliza el tiempo estipulado para el bit, momento en que pasa a `SHIFT_NEXT`.
 
-- `SHIFT_NEXT`: Ejecuta la orden de desplazamiento a la derecha en `shift_reg`, incrementa en una unidad el contador de bits (`bit_count`) y reinicia el contador de tiempo `tick_cnt`. Si `bit_count < 7`, el proceso va a regrasar a `BIT_HOLD` para procesar el siguiente bit. Pero si `bit_count == 7`, el proceso avanzará hacia `DONE`.
+- `SHIFT_NEXT`: Ejecuta la orden de desplazamiento a la derecha en `shift_reg`, incrementa en una unidad el contador de bits (`bit_count`) y reinicia el contador de tiempo `tick_cnt`. Si `bit_count < 8`, el proceso va a regrasar a `BIT_HOLD` para procesar el siguiente bit. Pero si `bit_count == 8`, el proceso avanzará hacia `DONE`.
 
 - `DONE`: Es la  transición final con una duración de 1 ciclo de reloj. Aquí se indica que ya se terminó la transmisión, por ende se desactiva la bandera `busy = 0` y se genera un pulso positivo en `done = 1` para notificar al sistema externo que la transferencia concluyó. Después pasa incondicionalmente al estado `IDLE`.
 
