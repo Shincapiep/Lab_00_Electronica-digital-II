@@ -269,14 +269,14 @@ Para que la unidad de control se comunique con el datapath y con el exterior, se
 
 El comportamiento de cada estado es el previsto en el digrama de flujo de la ASM:
 
-- `IDLE`: Es el estado inicial del sistema. Aquí se mantiene la línea serial en alto (`tx = 1`), `busy = 0` y `done = 0`.  Este estado se mantendrá en bucle hasta que la señal de inicio se active (`start = 1`) y asi poder pasar al estado `LOAD`.
+- `IDLE`: Se mantiene la línea serial en alto (`tx = 1`), `busy = 0` y `done = 0`. También se mantiene el bucle hasta que la señal de inicio se active (`start = 1`) y así poder pasar al estado `LOAD`.
 
-- `LOAD`: Es el estado de preparación cuya duración es de 1 ciclo de reloj. Su función es activar la bandera `busy = 1`, habilitar la carga en paralelo del dato de entrada en `shift_reg` y reiniciar las referencias de `tick_cnt` y `bit_count` para luego seguir incondicionalmente al estado `BIT_HOLD`.
+- `LOAD`: La duración es de 1 ciclo de reloj, se activa la bandera `busy = 1`, se habilita la carga en paralelo del dato de entrada en `shift_reg` y se reinician las referencias de `tick_cnt` y `bit_count` para luego seguir incondicionalmente al estado `BIT_HOLD`.
 
-- `BIT_HOLD`: Mantiene la salida `tx` conectada al bit actual (`shift_reg[0]`) mientras `tick_cnt` incrementa. Este estado dura `CLKS_PER_BIT` ciclos de reloj hasta que finaliza el tiempo estipulado para el bit, momento en que pasa a `SHIFT_NEXT`.
+- `BIT_HOLD`: Mantiene la salida `tx` conectada al bit actual (`shift_reg[0]`) mientras `tick_cnt` incrementa. El estado dura `CLKS_PER_BIT` ciclos de reloj hasta que finaliza el tiempo estipulado para el bit, momento en que pasa a `SHIFT_NEXT`.
 
 - `SHIFT_NEXT`: Ejecuta la orden de desplazamiento a la derecha en `shift_reg`, incrementa en una unidad el contador de bits (`bit_count`) y reinicia el contador de tiempo `tick_cnt`. Si `bit_count < 8`, el proceso va a regrasar a `BIT_HOLD` para procesar el siguiente bit. Pero si `bit_count == 8`, el proceso avanzará hacia `DONE`.
 
-- `DONE`: Es la  transición final con una duración de 1 ciclo de reloj. Aquí se indica que ya se terminó la transmisión, por ende se desactiva la bandera `busy = 0` y se genera un pulso positivo en `done = 1` para notificar al sistema externo que la transferencia concluyó. Después pasa incondicionalmente al estado `IDLE`.
+- `DONE`: La duración es de 1 ciclo de reloj. Tambien se indica que ya se terminó la transmisión al desactivar la bandera `busy = 0` y se genera un pulso positivo en `done = 1` para notificar al sistema externo que la transferencia concluyó. Después pasa incondicionalmente al estado `IDLE`.
 
 
