@@ -66,10 +66,10 @@ Para este ejercicio se diseñó un controlador de un semáforo simple mediante u
 
 El sistema cuenta con un contador interno que controla la permanencia en cada estado según la cantidad requerida de periodos de reloj ($T_{clk} = 10\text{ ns}$). El ciclo secuencial completo consta de 4 estados y una duración total de 13 ciclos de reloj:
 
-- **`S_Verde` ($S_0$ - Luz Verde):** Dura 5 ciclos de reloj.
-- **`S_Amarillo1` ($S_1$ - Luz Amarilla 1):** Dura 2 ciclos de reloj (Transición hacia Rojo).
-- **`S_Rojo` ($S_2$ - Luz Roja):** Dura 4 ciclos de reloj.
-- **`S_Amarillo2` ($S_3$ - Luz Amarilla 2):** Dura 2 ciclos de reloj (Transición hacia Verde).
+- **Estado `S_Verde` ($S_0$ - Luz Verde):** Dura 5 ciclos de reloj.
+- **Estado `S_Amarillo1` ($S_1$ - Luz Amarilla 1):** Dura 2 ciclos de reloj (Transición hacia Rojo).
+- **Estado `S_Rojo` ($S_2$ - Luz Roja):** Dura 4 ciclos de reloj.
+- **Estado `S_Amarillo2` ($S_3$ - Luz Amarilla 2):** Dura 2 ciclos de reloj (Transición hacia Verde).
 
 ### 1.2 Máquina de estados (FSM):
 Dado que ya se identificaron los estados y duraciones necesarios para diseñar la maquina de estados de este ejercicio, solo falta elegir las entradas y salidas necesarias. Estas son:
@@ -81,17 +81,47 @@ La maquina de estados diseñada se muestra a continuación:
 
 <img width="815" height="571" alt="image" src="https://github.com/user-attachments/assets/7d678e04-dc9c-49a7-ac66-7d6fd61dea3a" />
 
+El comportamiento de cada estado es el siguiente:
+- **Estado `S_Verde` ($S_0$ - Luz Verde):** El sistema inicia forzado en este estado o retorna a él tras la activación del reset. Permanece en $S_0$ durante 5 ciclos de reloj (mientras contador < 4). Al cumplirse la condición contador == 4, transiciona automáticamente al estado $S_1$.
+- **Estado `S_Amarillo1` ($S_1$ - Luz Amarilla 1):** Es la luz amarilla que ocurre durante la transición de luz verde a roja. Se mantiene durante 2 ciclos de reloj (mientras contador < 1). Al cumplirse contador == 1, transiciona hacia el estado $S_2$.
+- **Estado `S_Rojo` ($S_2$ - Luz Roja):**  Se activa la luz roja durante 4 ciclos de reloj (mientras contador < 3). Al alcanzarse la condición contador == 3, transiciona al estado $S_3$.
+- **Estado `S_Amarillo2` ($S_3$ - Luz Amarilla 2):** Es la luz amarilla que ocurre durante la transición de luz roja a verde. Permanece activo durante 2 ciclos de reloj (mientras contador < 1) y conmuta de retorno hacia $S_0$ cuando contador == 1, reiniciando así el ciclo del semáforo.
+
 ### 1.3 Resultados de Simulación y Análisis (GTKWave)
 
-Para la verificación se ejecutó el comando de compilación y visualización:
+Nuevamente se utilizó Visual Studio Code para verificar el correcto funcionamiento de los códigos realizados tanto para el módulo que implementa la lógica combinacional del ejercicio (`semaforo.v`) como del testbench (`semaforo_tb.v`). Los comandos de compilación y visualización usados para este ejercicio manejan la misma estructura y orden que los utilizados para el smoke test, pero cambiando el nombre de los archivos:
 ```bash
-iverilog -o tb_semaforo.vvp semaforo.v tb_semaforo.v
-vvp tb_semaforo.vvp
-gtkwave semaforo.vcd
+iverilog -o semaforo_tb.vvp semaforo.v semaforo_tb.v
+vvp semaforo_tb.vvp
+gtkwave tb_semaforo.vcd
 ```
 En la siguiente imágen se observa el resultado de la simulación en gtkwave.
 
-![Simulación Semáforo en GTKWave](Lab00/semaforogtk.png)
+<img width="1639" height="190" alt="image" src="https://github.com/user-attachments/assets/d6c51934-1ea6-46ba-aafb-89811373d6bf" />
+
+La simulación obtenida en GTKWave valida de manera satisfactoria el comportamiento de la Máquina de Estados Finitos (FSM) de tipo Moore diseñada para el control del semáforo. A continuación se analiza el comportamiento de las señales en función del tiempo y los ciclos de reloj.
+
+1. **Condición de Reset Inicial ($0\text{ ns} \rightarrow 15\text{ ns}$):**
+   Mientras la señal `rst` permanece en nivel alto (`rst = 1`), la FSM se fuerza al estado seguro de inicio $S_0$. Durante este intervalo se observa que la luz `verde` pasa a nivel alto (`1`) de forma inmediata, mientras que `amarillo` y `rojo` permanecen desactivadas (`0`).
+
+2. **Fase Verde — Estado $S_0$ ($15\text{ ns} \rightarrow 65\text{ ns}$):**
+   Una vez liberada la señal de reset (`rst = 0`), la luz `verde` permanece encendida durante **5 flancos de subida de reloj** ($50\text{ ns}$), cumpliendo con la temporización especificada para permitir la circulación de vehículos.
+
+3. **Fase Amarillo 1 — Estado $S_1$ ($65\text{ ns} \rightarrow 85\text{ ns}$):**
+   Al alcanzarse el quinto ciclo, la señal `verde` conmuta a `0` y la señal `amarillo` pasa a `1` durante **2 flancos de reloj** ($20\text{ ns}$). Esta fase advierte la transición hacia la detención del tráfico.
+
+4. **Fase Rojo — Estado $S_2$ ($85\text{ ns} \rightarrow 125\text{ ns}$):**
+   Cumplido el tiempo de prevención, la luz `amarillo` se apaga y se activa la luz `rojo` por un periodo de **4 flancos de reloj** ($40\text{ ns}$), garantizando el tiempo de detención completa de los vehículos.
+
+5. **Fase Amarillo 2 (Mejora) — Estado $S_3$ ($125\text{ ns} \rightarrow 145\text{ ns}$):**
+   Transcurrido el tiempo en rojo, la luz `rojo` se desactiva y se enciende nuevamente la luz `amarillo` durante **2 flancos de reloj** ($20\text{ ns}$). Esto confirma el funcionamiento de la **mejora integrada**, advirtiendo a los conductores la reapertura inminente del paso vehicular.
+
+6. **Reinicio Cíclico Automático ($145\text{ ns}$ en adelante):**
+   Al finalizar el segundo periodo en amarillo, la FSM retorna automáticamente al estado $S_0$ (`verde = 1`), repitiendo la secuencia completa de forma periódica e indefinida.
+
+#### Conclusión del Análisis:
+* **Exclusión Mutua:** Se verifica que en todo momento las salidas responden a un esquema One-Hot/Moore estricto donde solo una luz principal (`verde` o `rojo`) está activa a la vez, o en su defecto, únicamente la luz de transición (`amarillo`).
+* **Sincronismo:** Todas las transiciones ocurren de forma síncrona en el flanco positivo del reloj `clk`, eliminando posibles estados no deseados o glitches combinacionales.
 
 ---
 
