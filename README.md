@@ -69,12 +69,38 @@ El sistema cuenta con un contador interno que controla la permanencia en cada es
 - `S_Verde` ($S_0$ - Luz Verde): Dura 5 ciclos de reloj.
 - `S_Amarillo1` ($S_1$ - Luz Amarilla 1): Dura 2 ciclos de reloj (Transición hacia Rojo).
 - `S_Rojo` ($S_2$ - Luz Roja): Dura 4 ciclos de reloj.
-- `S_Amarillo2` ($S_3$ - Luz Amarilla 2 - Mejora): Dura 2 ciclos de reloj (Transición hacia Verde).
-
-Al completar el tiempo en el estado `S_Amarillo2`, el sistema reinicia automáticamente el ciclo retornando al estado `S_Verde`.
+- `S_Amarillo2` ($S_3$ - Luz Amarilla 2): Dura 2 ciclos de reloj (Transición hacia Verde).
 
 ### 2. Máquina de estados
----
+ ```mermaid
+stateDiagram-v2
+    [*] --> S_VERDE : Reset (rst = 1)
+
+    S_VERDE --> S_AMARILLO1 : 5 ciclos (timer == 4)
+    S_AMARILLO1 --> S_ROJO : 2 ciclos (timer == 1)
+    S_ROJO --> S_AMARILLO2 : 4 ciclos (timer == 3)
+    S_AMARILLO2 --> S_VERDE : 2 ciclos (timer == 1)
+
+    note right of S_VERDE
+        Salidas:
+        verde = 1, amarillo = 0, rojo = 0
+    end note
+
+    note right of S_AMARILLO1
+        Salidas:
+        verde = 0, amarillo = 1, rojo = 0
+    end note
+
+    note right of S_ROJO
+        Salidas:
+        verde = 0, amarillo = 0, rojo = 1
+    end note
+
+    note right of S_AMARILLO2
+        Salidas:
+        verde = 0, amarillo = 1, rojo = 0
+    end note
+```
 
 ### 3. Resultados de Simulación y Análisis (GTKWave)
 
@@ -87,6 +113,8 @@ gtkwave semaforo.vcd
 En la siguiente imágen se observa el resultado de la simulación en gtkwave.
 
 ![Simulación Semáforo en GTKWave](Lab00/semaforogtk.png)
+
+---
 
 ## Ejercicio 2: Acumulador Secuencial
 
