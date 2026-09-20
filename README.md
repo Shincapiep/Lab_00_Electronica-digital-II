@@ -245,7 +245,7 @@ El siguiente diagrama representa la máquina de estados algorítmica (ASM) encar
 
 - `LOAD`: Al detectarse `start == 1`, se activa la señal de ocupado (`busy = 1`), se carga el dato de entrada en el registro de desplazamiento (`shift_reg = data_in`) y se inicializan los contadores de tiempo (`tick_cnt = 0`) y de trama (`bit_count = 0`).
 
-- `BIT_HOLD`: Coloca en la línea de salida el bit menos significativo del registro (`tx = shift_reg[0]`). El sistema evalúa la condición de temporización `tick_cnt >= CLKS_PER_BIT - 1`. Mientras no se alcance el tiempo por bit, incrementa el contador `tick_cnt += 1` y se mantiene en este estado. Pero en el momento que llegue a completar los ciclos requeridos, avanza al estado de desplazamiento.
+- `BIT_HOLD`: Coloca en la línea de salida el bit menos significativo del registro (`tx = shift_reg[0]`). El sistema evalúa la condición de temporización `tick_cnt >= CLKS_PER_BIT - 2`. Mientras no se alcance el tiempo por bit, incrementa el contador `tick_cnt += 1` y se mantiene en este estado. Pero en el momento que llegue a completar los ciclos requeridos, avanza al estado de desplazamiento.
 
 - `SHIFT_NEXT`: Ejecuta un desplazamiento lógico a la derecha en el registro (`shift_reg = shift_reg >> 1`), incrementa el contador de bits transmitidos (`bit_count += 1`) y reinicia el contador de baudios (`tick_cnt = 0`). Inmediatamente evalúa la condición de parada `bit_count == 8`; Si quedan bits por enviar, retorna a `BIT_HOLD` para procesar el siguiente bit. Pero si ya se transmitieron los 8 bits completos, desactiva la bandera de ocupado (`Next_busy = 0`) y pasa al estado final.
 
@@ -258,7 +258,7 @@ El siguiente diagrama representa la máquina de estados algorítmica (ASM) encar
 Teniendo en cuenta lo solicitado en el enunciado del problema y el diagrama de flujo de la ASM, el datapath va a estar compuesto por tres registros o contadores principales:
 
 - Registro de Desplazamiento (`shift_reg [7:0]`): Almacena de forma paralela el byte de entrada (`data_in`) durante la fase de carga. Durante la transmisión, realiza desplazamientos hacia la derecha (`shift_reg <= {1'b0, shift_reg[7:1]}`), exponiendo progresivamente el bit menos significativo (`shift_reg[0]`) a la línea de salida tx.
-- Contador de Tiempo (`tick_cnt`): Garantiza la sincronización temporal de cada bit. Mide la cantidad de ciclos de reloj transcurridos para el bit actual desde 0 hasta `CLKS_PER_BIT - 1`, asegurando que la línea tx permanezca estable durante el intervalo definido.
+- Contador de Tiempo (`tick_cnt`): Garantiza la sincronización temporal de cada bit. Mide la cantidad de ciclos de reloj transcurridos para el bit actual desde 0 hasta `CLKS_PER_BIT - 2`, asegurando que la línea tx permanezca estable durante el intervalo definido.
 - Contador de Bits (`bit_count [3:0]`): Contabiliza los bits enviados individualmente. Su función es servir como condición de parada para que la Unidad de Control reconozca cuando se han transmitido los 8 bits del byte completo (`bit_count == 8`).
 
 ### 3.2.3 Unidad De Control (FSM)
@@ -283,9 +283,9 @@ El comportamiento de cada estado es el previsto en el digrama de flujo de la ASM
 
 La simulación realizada en GTKwave se muestra a continuación:
 
-<img width="1646" height="354" alt="image" src="https://github.com/user-attachments/assets/f3355392-83a8-4d4d-9b44-a0e23ff2b4f0" />
+<img width="1628" height="354" alt="image" src="https://github.com/user-attachments/assets/9c742e16-7d39-4d69-9f35-a23b22aa938a" />
 
-<img width="1631" height="360" alt="image" src="https://github.com/user-attachments/assets/f016b379-b5eb-479e-bf18-24aebd771f0e" />
+<img width="1654" height="354" alt="image" src="https://github.com/user-attachments/assets/10302b0b-5640-4f4d-8ed5-e8d1b8366c62" />
 
 La simulación realizada valida completamente el funcionamiento del transmisor serial registrando dos transmisiones consecutivas `8'hA5` (`10100101b`) y `8'h3C` (`00111100b`).
 
