@@ -283,7 +283,9 @@ El comportamiento de cada estado es el previsto en el digrama de flujo de la ASM
 
 La simulación realizada en GTKwave se muestra a continuación:
 
-<img width="1628" height="354" alt="image" src="https://github.com/user-attachments/assets/9c742e16-7d39-4d69-9f35-a23b22aa938a" />
+<img width="1634" height="351" alt="image" src="https://github.com/user-attachments/assets/61418496-9c91-4171-b072-172cf4170806" />
+
+<img width="1632" height="341" alt="image" src="https://github.com/user-attachments/assets/627b5006-7bf6-4eb1-a840-3adcfd926727" />
 
 La simulación realizada valida completamente el funcionamiento del transmisor serial registrando dos transmisiones consecutivas `8'hA5` (`10100101b`) y `8'h3C` (`00111100b`).
 
