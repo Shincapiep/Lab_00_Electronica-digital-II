@@ -279,4 +279,16 @@ El comportamiento de cada estado es el previsto en el digrama de flujo de la ASM
 
 - `DONE`: La duración es de 1 ciclo de reloj. Tambien se indica que ya se terminó la transmisión al desactivar la bandera `busy = 0` y se genera un pulso positivo en `done = 1` para notificar al sistema externo que la transferencia concluyó. Después pasa incondicionalmente al estado `IDLE`.
 
+### 3.3 Resultados de Simulación y Análisis (GTKWave)
 
+La simulación realizada en GTKwave se muestra a continuación:
+
+<img width="1646" height="354" alt="image" src="https://github.com/user-attachments/assets/f3355392-83a8-4d4d-9b44-a0e23ff2b4f0" />
+
+La simulación realizada valida completamente el funcionamiento del transmisor serial registrando dos transmisiones consecutivas (`8'hA5` y `8'h3C`).
+
+1. **Inicialización:** Se aplica la señal de reset (`rst`) al inicio de la simulación, forzando la FSM al estado de reposo (`IDLE` / `000`) y manteniendo `tx = 1`.
+2. **Primera Transmisión (`8'hA5`):** Al recibir un pulso de `start` de 1 ciclo de reloj, la señal `busy` se activa. Se observa el desplazamiento progresivo del registro `shift_reg` desde `A5` hasta `00` en pasos hexágonos intermedios, exponiendo en `tx` la trama serial LSB first (`1, 0, 1, 0, 0, 1, 0, 1`). El contador `bit_count` incrementa de 0 a 8 y finaliza con un pulso de 1 ciclo en `done`.
+3. **Segunda Transmisión (`8'h3C`):** Tras un intervalo de reposo, un segundo pulso de `start` carga el byte `3C` en `shift_reg`. La línea `tx` refleja la nueva secuencia de bits (`0, 0, 1, 1, 1, 1, 0, 0`), verificando que el sistema es capaz de encadenar múltiples envíos de datos sin bloqueos ni desfasamientos temporales.
+
+---
