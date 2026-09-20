@@ -22,12 +22,14 @@ Para el desarrollo de esta práctica se configuró un entorno de simulación lig
 
 ## Ejercicio 0: Smoke Test
 
-### 1. Objetivo Del Ejercicio:
+### 1. Objetivo Del Ejercicio
+
 - Validar la correcta instalación y funcionamiento del software instalado previamente: Visual Studio Code, Icarus Verilog (`iverilog`) y GTKWave.
 - Compilar y simular un módulo combinacional básico en Verilog para confirmar la generación del archivo `.vcd`.
 - Inspeccionar y verificar el comportamiento temporal de las señales lógicas en el visor de ondas GTKWave.
 
-### 2. Procedimiento Experimental:
+### 2. Procedimiento Experimental
+
 Lo primero que se hizo para comenzar con la práctica fue descargar los archivos `smoke_andor.v` y `tb_smoke_andor.v` del repositorio de Github de la clase. Luego estos fueron abiertos y revisados en el entorno de desarrollo Visual Studio Code. La función de cada uno es la siguiente:
 - `smoke_andor.v`: Módulo que implementa la lógica combinacional de las compuertas AND, OR y XOR.
 - `tb_smoke_andor.v`: Banco de pruebas (Testbench) encargado de instanciar el módulo principal, aplicar los estímulos de entrada y generar el archivo `.vcd`.
@@ -46,7 +48,8 @@ Se abrió la herramienta GTKWave y se cargó el archivo de simulación .vcd gene
 gtkwave
 ```
 
-### 3. Simulación Virtual en GTKwave:
+### 3. Simulación Virtual en GTKwave
+
 En la siguiente imágen se observa el resultado de la simulación en gtkwave:
 
 <img width="916" height="191" alt="image" src="https://github.com/user-attachments/assets/3b4dbbb2-3cd9-4f7c-8377-c3044922d19f" />
@@ -61,7 +64,8 @@ Como se puede ver en la imagen anterior, el comportamiento de la prueba fue el e
 
 ##  Ejercicio 1: FSM de Control – Semáforo Simple
 
-### 1.1 Planteamiento del Diseño:
+### 1.1 Planteamiento del Diseño
+
 Para este ejercicio se diseñó un controlador de un semáforo simple mediante una Máquina de Estados Finitos (FSM) tipo Moore. Pero antes de continuar, se debe mencionar un cambio realizado en el ejercicio original. Dado que en los sistemas de tránsito reales el ciclo de transición de un semáforo no pasa directamente de Rojo a Verde. Se ha añadido una segunda fase de Luz Amarilla para advertir a los conductores el cambio de luz roja a luz verde.
 
 El sistema cuenta con un contador interno que controla la permanencia en cada estado según la cantidad requerida de periodos de reloj ($T_{clk} = 10\text{ ns}$). El ciclo secuencial completo consta de 4 estados y una duración total de 13 ciclos de reloj:
@@ -71,7 +75,8 @@ El sistema cuenta con un contador interno que controla la permanencia en cada es
 - **Estado `S_Rojo` ($S_2$ - Luz Roja):** Dura 4 ciclos de reloj.
 - **Estado `S_Amarillo2` ($S_3$ - Luz Amarilla 2):** Dura 2 ciclos de reloj (Transición hacia Verde).
 
-### 1.2 Máquina de estados (FSM):
+### 1.2 Máquina de estados (FSM)
+
 Dado que ya se identificaron los estados y duraciones necesarios para diseñar la maquina de estados de este ejercicio, solo falta elegir las entradas y salidas necesarias. Estas son:
 
 - **Entradas:** `clk` (reloj del sistema) y `reset`.
@@ -121,7 +126,8 @@ En base al análisis realizado de la simulación obtenida en GTKWave, se valida 
 
 ## Ejercicio 2: Acumulador Secuencial
 
-### 1. Descripción del Diseño
+### 2.1 Descripción del Diseño
+
 Se implementó un acumulador secuencial síncrono controlado por una FSM. El sistema recibe una entrada de 4 bits ($x$) y un pulso de inicio (`start`). La acumulación se ejecuta ciclo a ciclo hasta alcanzar la condición límite parametrizada.
 
 * **Parámetros y Entradas:** 
@@ -131,7 +137,7 @@ Se implementó un acumulador secuencial síncrono controlado por una FSM. El sis
 
 ---
 
-### 2. Máquina de Estados y Datapath
+### 2.2 Máquina de Estados y Datapath
 
 El sistema combina una unidad de control FSM y una ruta de datos:
 
@@ -140,7 +146,7 @@ El sistema combina una unidad de control FSM y una ruta de datos:
 * **`DONE` (`2'b10`):** Emite la señal `done = 1` confirmando el fin del procesamiento y regresa a `IDLE`.
   
 
-#### 2.1 Identificacion de entradas y salidas FSM + datapath
+#### 2.2.1 Identificacion de entradas y salidas FSM + datapath
 
 Para llevar a cabo el sistena, es necesario utilizar un registro que se encargue de guardar el valor que va acumulando `acc`, además de utilizar un sumador para realizar la operción respectiva. por otro lado, para las funciones de contar 3 y 4 veces se utilizará un contador que permita determinar el numero de cuenta realizada y por ultimo se usa un comparador para analizar el camino de datos.
 
@@ -157,14 +163,15 @@ Conexiones datapath:
 - el registro de 6 bits `acc[5:0]` se encarga de almacenar el valor, con conexiones como `rstacc` responsable de resetearlo en cero y `Enacc` que funciona como habilitador para detener o empezar la suma, el cual será controlado por la  unidad de control.
 
 
-#### 2.2 Construcción de la unidad de ccontrol FSM
+#### 2.2.2 Construcción de la unidad de control FSM
 
 Se muestra el diagrama de estados de la unidad de control, consta de 4 estados que controlan el datapath indetificado anterior mente para el caso numero 3 (acumula hasta 20), para simplificar la expresión de comparasion, en lugar de utilizar `acc >= 20`, se cambia por `acc < 20` manejando la lógica respectiva
 
 ![Diagrama de estados](Lab00/ImagenesAcc/Diagrama%20de%20estados%20Acc.png)
 
 
-#### 2.3 Conexiones FSMD
+#### 2.2.3 Conexiones FSMD
+
 Se establecen las conexiones que unen la unidad de control con el camino de datos presentando el flujo de conexiones del circuito digital para realizar el caso 3 del ejercicio. En este caso la maquina FSM es de tipología Moore
 
 
@@ -173,7 +180,7 @@ Se establecen las conexiones que unen la unidad de control con el camino de dato
 Nota: para los casos de contar 3 y 4 veces el numero `x` de la entrada se realiza un proceso similar utilizando el contador, para realizar un circuito con las tres funciones se utiliza un multiplexoor que permita seleccionar el tipo de funcion deseado.
 
 
-### 3. Resultados de Simulación y Análisis (GTKWave)
+### 2.3 Resultados de Simulación y Análisis (GTKWave)
 
 Comandos ejecutados para la compilación y visualización:
 
@@ -211,13 +218,14 @@ la variable `acc` llega hasta 20 contando de uno en uno, se cumple la condición
 
 ## Ejercicio 3: Diseño y simulación de una ASM completa (Control + Datapath) (BONO)
 
-### 3.1 Objetivo Del Ejercicio: 
+### 3.1 Objetivo Del Ejercicio
 El objetivo principal de este ejercicio es diseñar un transmisor serial síncrono de 8 bits. Supongamos que se tiene un número de 8 bits guardado dentro de un sistema donde cada uno de estos viajará o se moverá al tiempo. Sin embargo, para enviar ese dato a otro dispositivo externo, generalmente no se cuenta con 8 cables que envié cada uno un bit, sino un solo cable de salida asignado como `tx`. Es por ello que la tarea del circuito o la simulación es recibir los 8 bits todos juntos, ir sacando un bit a la vez por la línea tx (respetando un tiempo específico para cada bit) y avisar cuándo está ocupado transmitiendo y cuándo terminó. Las entradas y salidas con las que se cuentan son las siguientes:
 
 - **Entradas:** `clk` (reloj del sistema), `reset`, `start` (Pulso de un ciclo para iniciar la transmisión) y `data_in[7:0]` (Byte a transmitir).
 - **Salidas:** `tx` (Línea de salida serial), `busy` (Indica que la transmisión está en curso) y `done` (Pulso de 1 ciclo al finalizar la transmisión).
 
-### 3.2 Planteamiento del Diseño: 
+### 3.2 Planteamiento del Diseño
+
 Para resolver este tipo de problemas de manera estructurada, lo ideal es dividir el sistema en dos grandes bloques que trabajan juntos, el datapath y la unidad de control (Estructura ASM). La función de cada uno será la siguiente:
 
 - Datapath: Se puede ver como la maquinaria de un sistema, ya que es donde están los elementos que guardan o modifican datos como los registros, los contadores y los desplazadores. El Datapath no toma decisiones, solo ejecuta órdenes.
@@ -227,14 +235,20 @@ Teniendo en cuenta las entradas y salidas mencionadas en el ejercicio, los bloqu
 
 <img width="1067" height="570" alt="image" src="https://github.com/user-attachments/assets/59c9629f-17c6-407b-b266-4cd0aeab7298" />
 
-### 3.2.1 Datapath: 
+### 3.2.1 Diagrama de Flujo ASM
+
+
+
+### 3.2.2 Datapath
+
 Teniendo en cuenta el enunciado del problema y el comportamiento esperado que este debe tener, el datapath va a estar compuesto por tres registros o contadores principales:
 
 - Registro de Desplazamiento (`shift_reg [7:0]`): Almacena de forma paralela el byte de entrada (`data_in`) durante la fase de carga. Durante la transmisión, realiza desplazamientos hacia la derecha (`shift_reg <= {1'b0, shift_reg[7:1]}`), exponiendo progresivamente el bit menos significativo (`shift_reg[0]`) a la línea de salida tx.
 - Contador de Tiempo (`tick_cnt`): Garantiza la sincronización temporal de cada bit. Mide la cantidad de ciclos de reloj transcurridos para el bit actual desde 0 hasta `CLKS_PER_BIT - 1`, asegurando que la línea tx permanezca estable durante el intervalo definido.
 - Contador de Bits (`bit_count [2:0]`): Contabiliza los bits enviados individualmente en un rango de 0 a 7. Su función es servir como condición de parada para que la Unidad de Control reconozca cuando se han transmitido los 8 bits del byte completo.
 
-### 3.2.2 Unidad De Control: 
+### 3.2.3 Unidad De Control (FSM)
+
 Para que la unidad de control se comunique con el datapath y con el exterior, se requiere de una Máquina de Estados Finitos (FSM) que incluya los 5 estadossolicitados en el problema:
 
 <img width="832" height="641" alt="image" src="https://github.com/user-attachments/assets/f9ff285a-69ba-4aab-b89d-30f6364af15d" />
