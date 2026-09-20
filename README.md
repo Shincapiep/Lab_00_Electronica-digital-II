@@ -61,48 +61,27 @@ Como se puede ver en la imagen anterior, el comportamiento de la prueba fue el e
 
 ##  Ejercicio 1: FSM de Control – Semáforo Simple
 
-### 1. Planteamiento del Diseño:
+### 1.1 Planteamiento del Diseño:
 Para este ejercicio se diseñó un controlador de un semáforo simple mediante una Máquina de Estados Finitos (FSM) tipo Moore. Pero antes de continuar, se debe mencionar un cambio realizado en el ejercicio original. Dado que en los sistemas de tránsito reales el ciclo de transición de un semáforo no pasa directamente de Rojo a Verde. Se ha añadido una segunda fase de Luz Amarilla para advertir a los conductores el cambio de luz roja a luz verde.
 
 El sistema cuenta con un contador interno que controla la permanencia en cada estado según la cantidad requerida de periodos de reloj ($T_{clk} = 10\text{ ns}$). El ciclo secuencial completo consta de 4 estados y una duración total de 13 ciclos de reloj:
 
-- `S_Verde` ($S_0$ - Luz Verde): Dura 5 ciclos de reloj.
-- `S_Amarillo1` ($S_1$ - Luz Amarilla 1): Dura 2 ciclos de reloj (Transición hacia Rojo).
-- `S_Rojo` ($S_2$ - Luz Roja): Dura 4 ciclos de reloj.
-- `S_Amarillo2` ($S_3$ - Luz Amarilla 2): Dura 2 ciclos de reloj (Transición hacia Verde).
+- **`S_Verde` ($S_0$ - Luz Verde):** Dura 5 ciclos de reloj.
+- **`S_Amarillo1` ($S_1$ - Luz Amarilla 1):** Dura 2 ciclos de reloj (Transición hacia Rojo).
+- **`S_Rojo` ($S_2$ - Luz Roja):** Dura 4 ciclos de reloj.
+- **`S_Amarillo2` ($S_3$ - Luz Amarilla 2):** Dura 2 ciclos de reloj (Transición hacia Verde).
 
-### 2. Máquina de estados
- ```mermaid
-stateDiagram-v2
-    [*] --> S_VERDE : Reset (rst = 1)
+### 1.2 Máquina de estados (FSM):
+Dado que ya se identificaron los estados y duraciones necesarios para diseñar la maquina de estados de este ejercicio, solo falta elegir las entradas y salidas necesarias. Estas son:
 
-    S_VERDE --> S_AMARILLO1 : 5 ciclos (timer == 4)
-    S_AMARILLO1 --> S_ROJO : 2 ciclos (timer == 1)
-    S_ROJO --> S_AMARILLO2 : 4 ciclos (timer == 3)
-    S_AMARILLO2 --> S_VERDE : 2 ciclos (timer == 1)
+- **Entradas:** `clk` (reloj del sistema) y `reset`.
+- **Salidas:** `verde`, `amarillo` y `rojo`.
 
-    note right of S_VERDE
-        Salidas:
-        verde = 1, amarillo = 0, rojo = 0
-    end note
+La maquina de estados diseñada se muestra a continuación:
 
-    note right of S_AMARILLO1
-        Salidas:
-        verde = 0, amarillo = 1, rojo = 0
-    end note
+<img width="815" height="571" alt="image" src="https://github.com/user-attachments/assets/7d678e04-dc9c-49a7-ac66-7d6fd61dea3a" />
 
-    note right of S_ROJO
-        Salidas:
-        verde = 0, amarillo = 0, rojo = 1
-    end note
-
-    note right of S_AMARILLO2
-        Salidas:
-        verde = 0, amarillo = 1, rojo = 0
-    end note
-```
-
-### 3. Resultados de Simulación y Análisis (GTKWave)
+### 1.3 Resultados de Simulación y Análisis (GTKWave)
 
 Para la verificación se ejecutó el comando de compilación y visualización:
 ```bash
