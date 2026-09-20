@@ -6,7 +6,7 @@
 
 ##  Integrantes del Equipo
 - **Samuel Hincapie Perilla**
-- **Eduardo**
+- **Eduardo Felipe Camacho Lara**
 - **Gabriel Alberto Rodríguez Rincón**
 
 ---
@@ -49,6 +49,7 @@ gtkwave
 ### 3. Simulación Virtual en GTKwave:
 En la siguiente imágen se observa el resultado de la simulación en gtkwave:
 
+<img width="916" height="191" alt="image" src="https://github.com/user-attachments/assets/3b4dbbb2-3cd9-4f7c-8377-c3044922d19f" />
 
 
 Como se puede ver en la imagen anterior, el comportamiento de la prueba fue el esperado, ya que las salidas generadas concuerdan exactamente con el funcionamiento de las funciones lógicas AND, OR y XOR.
