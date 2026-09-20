@@ -239,7 +239,7 @@ Teniendo en cuenta las entradas y salidas mencionadas en el ejercicio, los bloqu
 
 El siguiente diagrama representa la máquina de estados algorítmica (ASM) encargada de la transmisión serial asíncrona de datos de 8 bits. Describe la interacción entre la FSM de control y el datapath, incorporando un generador de baudios mediante temporización por ciclos de reloj.
 
-<img width="469" height="676" alt="image" src="https://github.com/user-attachments/assets/79d86d33-83f1-4d05-b9ff-35a0575919f8" />
+<img width="421" height="620" alt="image" src="https://github.com/user-attachments/assets/4794c3ab-46b5-464c-bd8f-e6b119fafba7" />
 
 - `IDLE`: El sistema se encuentra a la espera de la señal de inicio. Mantiene la línea de transmisión en alto (`tx = 1`) y las banderas inactivas (`busy = 0`, `done = 0`). Se mantiene en un bucle sobre sí mismo mientras `start == 0`.
 
@@ -265,7 +265,7 @@ Teniendo en cuenta lo solicitado en el enunciado del problema y el diagrama de f
 
 Para que la unidad de control se comunique con el datapath y con el exterior, se requiere de una Máquina de Estados Finitos (FSM) que incluya los 5 estados solicitados en el problema:
 
-<img width="712" height="589" alt="image" src="https://github.com/user-attachments/assets/01914bdf-19d7-422a-9f20-ee2ff24d088d" />
+<img width="691" height="562" alt="image" src="https://github.com/user-attachments/assets/68e678dd-04f0-4d40-874b-18512e0df174" />
 
 El comportamiento de cada estado es el previsto en el digrama de flujo de la ASM:
 
