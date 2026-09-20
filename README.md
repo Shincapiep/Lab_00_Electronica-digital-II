@@ -235,13 +235,26 @@ Teniendo en cuenta las entradas y salidas mencionadas en el ejercicio, los bloqu
 
 <img width="1067" height="570" alt="image" src="https://github.com/user-attachments/assets/59c9629f-17c6-407b-b266-4cd0aeab7298" />
 
-### 3.2.1 Diagrama de Flujo ASM
+### 3.2.1 Diagrama de Flujo de la ASM
 
+El siguiente diagrama representa la máquina de estados algorítmica (ASM) encargada de la transmisión serial asíncrona de datos de 8 bits. Describe la interacción entre la FSM de control y el datapath, incorporando un generador de baudios mediante temporización por ciclos de reloj.
+
+<img width="469" height="676" alt="image" src="https://github.com/user-attachments/assets/79d86d33-83f1-4d05-b9ff-35a0575919f8" />
+
+- `IDLE`: Es el estado inicial del sistema. Aquí se mantiene la línea serial en alto (`tx = 1`), `busy = 0` y `done = 0`.  Este estado se mantendrá en bucle hasta que la señal de inicio se active (`start = 1`) y asi poder pasar al estado `LOAD`.
+
+- `LOAD`: Es el estado de preparación cuya duración es de 1 ciclo de reloj. Su función es activar la bandera `busy = 1`, habilitar la carga en paralelo del dato de entrada en `shift_reg` y reiniciar las referencias de `tick_cnt` y `bit_count` para luego seguir incondicionalmente al estado `BIT_HOLD`.
+
+- `BIT_HOLD`: Mantiene la salida `tx` conectada al bit actual (`shift_reg[0]`) mientras `tick_cnt` incrementa. Este estado dura `CLKS_PER_BIT` ciclos de reloj hasta que finaliza el tiempo estipulado para el bit, momento en que pasa a `SHIFT_NEXT`.
+
+- `SHIFT_NEXT`: Ejecuta la orden de desplazamiento a la derecha en `shift_reg`, incrementa en una unidad el contador de bits (`bit_count`) y reinicia el contador de tiempo `tick_cnt`. Si `bit_count < 7`, el proceso va a regrasar a `BIT_HOLD` para procesar el siguiente bit. Pero si `bit_count == 7`, el proceso avanzará hacia `DONE`.
+
+- `DONE`: Es la  transición final con una duración de 1 ciclo de reloj. Aquí se indica que ya se terminó la transmisión, por ende se desactiva la bandera `busy = 0` y se genera un pulso positivo en `done = 1` para notificar al sistema externo que la transferencia concluyó. Después pasa incondicionalmente al estado `IDLE`.
 
 
 ### 3.2.2 Datapath
 
-Teniendo en cuenta el enunciado del problema y el comportamiento esperado que este debe tener, el datapath va a estar compuesto por tres registros o contadores principales:
+Teniendo en cuenta lo solicitado en el enunciado del problema y el diagrama de flujo de la ASM, el datapath va a estar compuesto por tres registros o contadores principales:
 
 - Registro de Desplazamiento (`shift_reg [7:0]`): Almacena de forma paralela el byte de entrada (`data_in`) durante la fase de carga. Durante la transmisión, realiza desplazamientos hacia la derecha (`shift_reg <= {1'b0, shift_reg[7:1]}`), exponiendo progresivamente el bit menos significativo (`shift_reg[0]`) a la línea de salida tx.
 - Contador de Tiempo (`tick_cnt`): Garantiza la sincronización temporal de cada bit. Mide la cantidad de ciclos de reloj transcurridos para el bit actual desde 0 hasta `CLKS_PER_BIT - 1`, asegurando que la línea tx permanezca estable durante el intervalo definido.
