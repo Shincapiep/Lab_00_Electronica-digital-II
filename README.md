@@ -99,29 +99,21 @@ En la siguiente imágen se observa el resultado de la simulación en gtkwave.
 
 <img width="1639" height="190" alt="image" src="https://github.com/user-attachments/assets/d6c51934-1ea6-46ba-aafb-89811373d6bf" />
 
-La simulación obtenida en GTKWave valida de manera satisfactoria el comportamiento de la Máquina de Estados Finitos (FSM) de tipo Moore diseñada para el control del semáforo. A continuación se analiza el comportamiento de las señales en función del tiempo y los ciclos de reloj.
+A continuación se analiza el comportamiento de las señales en función del tiempo y los ciclos de reloj de acuerdo a la simulación:
 
-1. **Condición de Reset Inicial ($0\text{ ns} \rightarrow 15\text{ ns}$):**
-   Mientras la señal `rst` permanece en nivel alto (`rst = 1`), la FSM se fuerza al estado seguro de inicio $S_0$. Durante este intervalo se observa que la luz `verde` pasa a nivel alto (`1`) de forma inmediata, mientras que `amarillo` y `rojo` permanecen desactivadas (`0`).
+1. **Condición de Reset Inicial ($0\text{ ns} \rightarrow 15\text{ ns}$):** Mientras la señal `rst` permanece en nivel alto (`rst = 1`), la FSM se fuerza al estado seguro de inicio $S_0$. Durante este intervalo se observa que la luz `verde` se mantiene en nivel alto (`1`) de forma constante, mientras que `amarillo` y `rojo` permanecen desactivadas (`0`).
 
-2. **Fase Verde — Estado $S_0$ ($15\text{ ns} \rightarrow 65\text{ ns}$):**
-   Una vez liberada la señal de reset (`rst = 0`), la luz `verde` permanece encendida durante **5 flancos de subida de reloj** ($50\text{ ns}$), cumpliendo con la temporización especificada para permitir la circulación de vehículos.
+2. **Luz Verde — Estado $S_0$ ($15\text{ ns} \rightarrow 65\text{ ns}$):** Una vez liberada la señal de reset (`rst = 0`), la señal `verde` permanece encendida durante 5 flancos de subida de reloj ($50\text{ ns}$).
 
-3. **Fase Amarillo 1 — Estado $S_1$ ($65\text{ ns} \rightarrow 85\text{ ns}$):**
-   Al alcanzarse el quinto ciclo, la señal `verde` conmuta a `0` y la señal `amarillo` pasa a `1` durante **2 flancos de reloj** ($20\text{ ns}$). Esta fase advierte la transición hacia la detención del tráfico.
+3. **Luz Amarilla 1 — Estado $S_1$ ($65\text{ ns} \rightarrow 85\text{ ns}$):** Al alcanzarse el quinto ciclo, la señal `verde` conmuta a `0` y la señal `amarillo` pasa a `1` durante 2 flancos de reloj ($20\text{ ns}$).
 
-4. **Fase Rojo — Estado $S_2$ ($85\text{ ns} \rightarrow 125\text{ ns}$):**
-   Cumplido el tiempo de prevención, la luz `amarillo` se apaga y se activa la luz `rojo` por un periodo de **4 flancos de reloj** ($40\text{ ns}$), garantizando el tiempo de detención completa de los vehículos.
+4. **Luz Roja — Estado $S_2$ ($85\text{ ns} \rightarrow 125\text{ ns}$):** Cumplido el tiempo del estado $S_1$, la señal `amarillo` se apaga y se activa la señal `rojo` por un periodo de 4 flancos de reloj ($40\text{ ns}$).
+   
+5. **Luz Amarilla 2 — Estado $S_3$ ($125\text{ ns} \rightarrow 145\text{ ns}$):** Transcurrido el tiempo en rojo, la señal `rojo` se desactiva y se enciende nuevamente la señal `amarillo` durante 2 flancos de reloj ($20\text{ ns}$).
 
-5. **Fase Amarillo 2 (Mejora) — Estado $S_3$ ($125\text{ ns} \rightarrow 145\text{ ns}$):**
-   Transcurrido el tiempo en rojo, la luz `rojo` se desactiva y se enciende nuevamente la luz `amarillo` durante **2 flancos de reloj** ($20\text{ ns}$). Esto confirma el funcionamiento de la **mejora integrada**, advirtiendo a los conductores la reapertura inminente del paso vehicular.
+6. **Reinicio Cíclico Automático ($145\text{ ns}$ en adelante):** Al finalizar el segundo periodo en amarillo, la FSM retorna automáticamente al estado $S_0$ (`verde = 1`), repitiendo la secuencia completa de forma periódica e indefinida.
 
-6. **Reinicio Cíclico Automático ($145\text{ ns}$ en adelante):**
-   Al finalizar el segundo periodo en amarillo, la FSM retorna automáticamente al estado $S_0$ (`verde = 1`), repitiendo la secuencia completa de forma periódica e indefinida.
-
-#### Conclusión del Análisis:
-* **Exclusión Mutua:** Se verifica que en todo momento las salidas responden a un esquema One-Hot/Moore estricto donde solo una luz principal (`verde` o `rojo`) está activa a la vez, o en su defecto, únicamente la luz de transición (`amarillo`).
-* **Sincronismo:** Todas las transiciones ocurren de forma síncrona en el flanco positivo del reloj `clk`, eliminando posibles estados no deseados o glitches combinacionales.
+En base al análisis realizado de la simulación obtenida en GTKWave, se valida de manera satisfactoria el comportamiento de la Máquina de Estados Finitos (FSM) de tipo Moore diseñada para el control del semáforo, donde solo una luz (`verde`, `àmarillo` o `rojo`) está activa a la vez. Además, todas las transiciones ocurren de forma síncrona en el flanco positivo del reloj `clk`, eliminando posibles estados no deseados.
 
 ---
 
