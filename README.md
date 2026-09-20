@@ -239,6 +239,16 @@ Para que la unidad de control se comunique con el datapath y con el exterior, se
 
 <img width="832" height="641" alt="image" src="https://github.com/user-attachments/assets/f9ff285a-69ba-4aab-b89d-30f6364af15d" />
 
+El comportamiento de cada estado es el siguiente:
 
+- `IDLE`: Es el estado inicial del sistema. Aquí se mantiene la línea serial en alto (`tx = 1`), `busy = 0` y `done = 0`.  Este estado se mantendrá en bucle hasta que la señal de inicio se active (`start = 1`) y asi poder pasar al estado `LOAD`.
+
+- `LOAD`: Es el estado de preparación cuya duración es de 1 ciclo de reloj. Su función es activar la bandera `busy = 1`, habilitar la carga en paralelo del dato de entrada en `shift_reg` y reiniciar las referencias de `tick_cnt` y `bit_count` para luego seguir incondicionalmente al estado `BIT_HOLD`.
+
+- `BIT_HOLD`: Mantiene la salida `tx` conectada al bit actual (`shift_reg[0]`) mientras `tick_cnt` incrementa. Este estado dura `CLKS_PER_BIT` ciclos de reloj hasta que finaliza el tiempo estipulado para el bit, momento en que pasa a `SHIFT_NEXT`.
+
+- `SHIFT_NEXT`: Ejecuta la orden de desplazamiento a la derecha en `shift_reg`, incrementa en una unidad el contador de bits (`bit_count`) y reinicia el contador de tiempo `tick_cnt`. Si `bit_count < 7`, el proceso va a regrasar a `BIT_HOLD` para procesar el siguiente bit. Pero si `bit_count == 7`, el proceso avanzará hacia `DONE`.
+
+- `DONE`: Es la  transición final con una duración de 1 ciclo de reloj. Aquí se indica que ya se terminó la transmisión, por ende se desactiva la bandera `busy = 0` y se genera un pulso positivo en `done = 1` para notificar al sistema externo que la transferencia concluyó. Después pasa incondicionalmente al estado `IDLE`.
 
 
