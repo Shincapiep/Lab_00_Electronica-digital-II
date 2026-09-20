@@ -115,6 +115,8 @@ A continuación se analiza el comportamiento de las señales en función del tie
 
 En base al análisis realizado de la simulación obtenida en GTKWave, se valida de manera satisfactoria el comportamiento de la Máquina de Estados Finitos (FSM) de tipo Moore diseñada para el control del semáforo, donde solo una luz (`verde`, `àmarillo` o `rojo`) está activa a la vez. Además, todas las transiciones ocurren de forma síncrona en el flanco positivo del reloj `clk`, eliminando posibles estados no deseados.
 
+**El código HDL y el Testbench se encuentran en la carpeta scr en el apartado destinado a este ejercicio.**
+
 ---
 
 ## Ejercicio 2: Acumulador Secuencial
