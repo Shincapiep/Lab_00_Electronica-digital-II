@@ -61,15 +61,17 @@ Como se puede ver en la imagen anterior, el comportamiento de la prueba fue el e
 
 ##  Ejercicio 1: FSM de Control – Semáforo Simple
 
-### 1. Descripción del Diseño
-Se implementó una Máquina de Estados Finitos (FSM) síncrona tipo Moore para controlar la secuencia cíclica de un semáforo vehicular de tres estados. 
+### 1. Planteamiento del Diseño:
+Para este ejercicio se diseñó un controlador de un semáforo simple mediante una Máquina de Estados Finitos (FSM) tipo Moore. Pero antes de continuar, se debe mencionar un cambio realizado en el ejercicio original. Dado que en los sistemas de tránsito reales el ciclo de transición de un semáforo no pasa directamente de Rojo a Verde. Se ha añadido una segunda fase de Luz Amarilla para advertir a los conductores el cambio de luz roja a luz verde.
 
-El sistema cuenta con un contador interno que controla la permanencia en cada estado según la cantidad requerida de periodos de reloj ($T_{clk} = 10\text{ ns}$):
-- **Estado $S_0$ (Verde):** Permanece 5 ciclos de reloj.
-- **Estado $S_1$ (Amarillo):** Permanece 2 ciclos de reloj.
-- **Estado $S_2$ (Rojo):** Permanece 4 ciclos de reloj.
+El sistema cuenta con un contador interno que controla la permanencia en cada estado según la cantidad requerida de periodos de reloj ($T_{clk} = 10\text{ ns}$). El ciclo secuencial completo consta de 4 estados y una duración total de 13 ciclos de reloj:
 
-Al completar el tiempo en el estado $S_2$, el sistema reinicia automáticamente el ciclo retornando al estado $S_0$.
+- `S_Verde` ($S_0$ - Luz Verde): Dura 5 ciclos de reloj.
+- `S_Amarillo1` ($S_1$ - Luz Amarilla 1): Dura 2 ciclos de reloj (Transición hacia Rojo).
+- `S_Rojo` ($S_2$ - Luz Roja): Dura 4 ciclos de reloj.
+- `S_Amarillo2` ($S_3$ - Luz Amarilla 2 - Mejora): Dura 2 ciclos de reloj (Transición hacia Verde).
+
+Al completar el tiempo en el estado `S_Amarillo2`, el sistema reinicia automáticamente el ciclo retornando al estado `S_Verde`.
 
 ### 2. Máquina de estados
 ---
