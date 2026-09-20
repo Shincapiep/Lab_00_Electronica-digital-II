@@ -229,7 +229,7 @@ El objetivo principal de este ejercicio es diseñar un transmisor serial síncro
 Para resolver este tipo de problemas de manera estructurada, lo ideal es dividir el sistema en dos grandes bloques que trabajan juntos, el datapath y la unidad de control (Estructura ASM). La función de cada uno será la siguiente:
 
 - Datapath: Se puede ver como la maquinaria de un sistema, ya que es donde están los elementos que guardan o modifican datos como los registros, los contadores y los desplazadores. El Datapath no toma decisiones, solo ejecuta órdenes.
-- Unidad de Control: Por otro lado, este es el cerebro, aquí no se guarda el dato de 8 bits ni se va a vontar el tiempo directamente. Su único trabajo es mirar en qué punto del proceso se encuentra el sistema para enviar señales de control al Datapath y que este actúe.
+- Unidad de Control: Por otro lado, este es el cerebro, aquí no se guarda el dato de 8 bits ni se va a contar el tiempo directamente. Su único trabajo es mirar en qué punto del proceso se encuentra el sistema para enviar señales de control al Datapath y que este actúe.
 
 Teniendo en cuenta las entradas y salidas mencionadas en el ejercicio, los bloques de esta ASM se verían por el momento de esta manera:
 
@@ -259,11 +259,11 @@ Teniendo en cuenta lo solicitado en el enunciado del problema y el diagrama de f
 
 - Registro de Desplazamiento (`shift_reg [7:0]`): Almacena de forma paralela el byte de entrada (`data_in`) durante la fase de carga. Durante la transmisión, realiza desplazamientos hacia la derecha (`shift_reg <= {1'b0, shift_reg[7:1]}`), exponiendo progresivamente el bit menos significativo (`shift_reg[0]`) a la línea de salida tx.
 - Contador de Tiempo (`tick_cnt`): Garantiza la sincronización temporal de cada bit. Mide la cantidad de ciclos de reloj transcurridos para el bit actual desde 0 hasta `CLKS_PER_BIT - 1`, asegurando que la línea tx permanezca estable durante el intervalo definido.
-- Contador de Bits (`bit_count [2:0]`): Contabiliza los bits enviados individualmente en un rango de 0 a 7. Su función es servir como condición de parada para que la Unidad de Control reconozca cuando se han transmitido los 8 bits del byte completo.
+- Contador de Bits (`bit_count [3:0]`): Contabiliza los bits enviados individualmente. Su función es servir como condición de parada para que la Unidad de Control reconozca cuando se han transmitido los 8 bits del byte completo (`bit_count == 8`).
 
 ### 3.2.3 Unidad De Control (FSM)
 
-Para que la unidad de control se comunique con el datapath y con el exterior, se requiere de una Máquina de Estados Finitos (FSM) que incluya los 5 estadossolicitados en el problema:
+Para que la unidad de control se comunique con el datapath y con el exterior, se requiere de una Máquina de Estados Finitos (FSM) que incluya los 5 estados solicitados en el problema:
 
 <img width="712" height="589" alt="image" src="https://github.com/user-attachments/assets/01914bdf-19d7-422a-9f20-ee2ff24d088d" />
 
