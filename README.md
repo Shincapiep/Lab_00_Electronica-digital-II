@@ -20,6 +20,44 @@ Para el desarrollo de esta práctica se configuró un entorno de simulación lig
 
 ---
 
+## Ejercicio 0: Smoke Test
+
+### 1. Objetivo Del Ejercicio:
+- Validar la correcta instalación y funcionamiento del software instalado previamente: Visual Studio Code, Icarus Verilog (`iverilog`) y GTKWave.
+- Compilar y simular un módulo combinacional básico en Verilog para confirmar la generación del archivo `.vcd`.
+- Inspeccionar y verificar el comportamiento temporal de las señales lógicas en el visor de ondas GTKWave.
+
+### 2. Procedimiento Experimental:
+Lo primero que se hizo para comenzar con la práctica fue descargar los archivos `smoke_andor.v` y `tb_smoke_andor.v` del repositorio de Github de la clase. Luego estos fueron abiertos y revisados en el entorno de desarrollo Visual Studio Code. La función de cada uno es la siguiente:
+- `smoke_andor.v`: Módulo que implementa la lógica combinacional de las compuertas AND, OR y XOR.
+- `tb_smoke_andor.v`: Banco de pruebas (Testbench) encargado de instanciar el módulo principal, aplicar los estímulos de entrada y generar el archivo `.vcd`.
+
+
+Para ello se utilizó la terminal de Visual Studio Code, donde se ejecutó la compilación del código mediante el ejecutable de Icarus Verilog (iverilog) especificando el nombre del archivo de salida compilado (tb_smoke_andor.vvp):
+```bash
+iverilog -o tb_smoke_andor.vvp tb_smoke_andor.v
+```
+A continuación, se ejecutó el motor de simulación vvp para procesar el binario y generar el archivo `.vcd` correspondiente:
+```bash
+vvp tb_smoke_andor.vvp
+```
+Se abrió la herramienta GTKWave y se cargó el archivo de simulación .vcd generado.
+```bash
+gtkwave
+```
+
+### 3. Simulación Virtual en GTKwave:
+En la siguiente imágen se observa el resultado de la simulación en gtkwave:
+
+
+
+Como se puede ver en la imagen anterior, el comportamiento de la prueba fue el esperado, ya que las salidas generadas concuerdan exactamente con el funcionamiento de las funciones lógicas AND, OR y XOR.
+- Comportamiento AND (`y_and`): Su valor es 1 únicamente en el intervalo de 30 ns a 40 ns cuando ambas entradas están activas.
+- Comportamiento OR (`y_or`): Su valor es 1 únicamente en el intervalo de 10 ns a 40 ns cuando al menos una de las dos entradas están activas.
+- Comportamiento xor (`y_xor`): Su valor es 1 únicamente en el intervalo de 10 ns a 30 ns cuando ambas entradas tienen valores diferentes entre si.
+
+---
+
 ##  Ejercicio 1: FSM de Control – Semáforo Simple
 
 ### 1. Descripción del Diseño
