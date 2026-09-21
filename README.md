@@ -177,7 +177,7 @@ Se establecen las conexiones que unen la unidad de control con el camino de dato
 
 ![Diagrama de estado](Lab00/ImagenesAcc/FSMD.png).
 
-Nota: para los casos de contar 3 y 4 veces el numero `x` de la entrada se realiza un proceso similar utilizando el contador, para realizar un circuito con las tres funciones se utiliza un multiplexoor que permita seleccionar el tipo de funcion deseado.
+Nota: para los casos de contar 3 y 4 veces el numero `x` de la entrada se realiza un proceso similar utilizando el contador, para realizar un circuito con las tres funciones se utiliza un multiplexor que permita seleccionar el tipo de funcion deseada.
 
 
 ### 2.3 Resultados de Simulación y Análisis (GTKWave)
