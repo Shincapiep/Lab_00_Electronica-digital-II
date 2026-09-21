@@ -152,9 +152,9 @@ Para llevar a cabo el sistena, es necesario utilizar un registro que se encargue
 
 ![Diagrama de Caja negra](Lab00/ImagenesAcc/Entradas%20y%20salidas%20Acc.png)
 
-Las entradas de la FSM de ña unidad de control son:
+Las entradas de la FSM de la unidad de control son:
 - CLK : permite cambiar entre estados dependiendo de su duración
-- Start: Es el boton que activa la secuencia
+- Start: Es el botón que activa la secuencia
 - rst: Diferente al boton de rst del acumulador, se encarga de resetear solo la FSM devolviendola al estado inicial $S_0$
 - OutComp: permite analizar la condiion deseada
 
