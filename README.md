@@ -159,8 +159,8 @@ Las entradas de la FSM de la unidad de control son:
 - OutComp: permite analizar la condición deseada.
 
 Conexiones datapath:
-- El sumador tiene sus dos entradas (sumandos) y la salida (suma), el sumador tiene la cantidad de bits necesaria para soportar la suma reequerida
-- el registro de 6 bits `acc[5:0]` se encarga de almacenar el valor, con conexiones como `rstacc` responsable de resetearlo en cero y `Enacc` que funciona como habilitador para detener o empezar la suma, el cual será controlado por la  unidad de control.
+- El sumador tiene sus dos entradas (sumandos) y la salida (suma), el sumador tiene la cantidad de bits necesaria para soportar la suma requerida
+- El registro de 6 bits `acc[5:0]` se encarga de almacenar el valor, con conexiones como `rstacc` responsable de resetearlo en cero y `Enacc` que funciona como habilitador para detener o empezar la suma, el cual será controlado por la  unidad de control.
 
 
 #### 2.2.2 Construcción de la unidad de control FSM
