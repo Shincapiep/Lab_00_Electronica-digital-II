@@ -165,14 +165,14 @@ Conexiones datapath:
 
 #### 2.2.2 Construcción de la unidad de control FSM
 
-Se muestra el diagrama de estados de la unidad de control, consta de 4 estados que controlan el datapath identificado anteriormente para el caso numero 3 (acumular hasta 20), para simplificar la expresión de comparasion, en lugar de utilizar `acc >= 20`, se cambia por `acc < 20` manejando la lógica respectiva
+Se muestra el diagrama de estados de la unidad de control, consta de 4 estados que controlan el datapath identificado anteriormente para el caso numero 3 (acumular hasta 20), para simplificar la expresión de comparación, en lugar de utilizar `acc >= 20`, se cambia por `acc < 20` manejando la lógica respectiva
 
 ![Diagrama de estados](Lab00/ImagenesAcc/Diagrama%20de%20estados%20Acc.png)
 
 
 #### 2.2.3 Conexiones FSMD
 
-Se establecen las conexiones que unen la unidad de control con el camino de datos presentando el flujo de conexiones del circuito digital para realizar el caso 3 del ejercicio. En este caso la maquina FSM es de tipología Moore
+Se establecen las conexiones que unen la unidad de control con el camino de datos presentando el flujo de conexiones del circuito digital para realizar el caso 3 del ejercicio. En este caso la maquina FSM es de tipología Moore.
 
 
 ![Diagrama de estado](Lab00/ImagenesAcc/FSMD.png).
